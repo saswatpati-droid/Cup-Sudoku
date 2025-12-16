@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Cup Sudoku</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Cup Sudoku</h1>
+
+  <!-- Simple check that file is working -->
+  <p>If you can read this on GitHub Pages, things are working.</p>
+
+  <script src="script.js"></script>
+</body>
+</html>
