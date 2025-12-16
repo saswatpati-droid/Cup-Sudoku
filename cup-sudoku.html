@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1 vs 1 Sudoku</title>
+
+<style>
+:root {
+  --bg: #fff1f7;
+  --card: #ffffff;
+  --text: #222;
+  --accent: #ff7eb3;
+  --secondary: #74c0fc;
+  --cell-bg: #fff;
+  --cell-disabled: #f1f3f5;
+  --wrong: #ffe3e3;
+}
+
+.dark {
+  --bg: #0f172a;
+  --card: #020617;
+  --text: #e5e7eb;
+  --accent: #f472b6;
+  --secondary: #60a5fa;
+  --cell-bg: #020617;
+  --cell-disabled: #1e293b;
+  --wrong: #7f1d1d;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+<div class="footer">
+  Made by chiklu with ❤️
+</div>
+  
+.app {
+  width: 100%;
+  max-width: 360px;
+  background: var(--card);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+}
+
+h1 {
+  text-align: center;
+  margin: 0 0 6px;
+  color: var(--accent);
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 13px;
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+input, button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+}
+
+button.secondary {
+  background: var(--secondary);
+}
+
+.toggle {
+  text-align: center;
+  font-size: 13px;
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 2px;
+}
+
+.cell {
+  aspect-ratio: 1;
+  text-align: center;
+  font-size: 18px;
+  border-radius: 8px;
+  background: var(--cell-bg);
+  border: 1px solid #5553;
+}
+
+.cell:disabled {
+  background: var(--cell-disabled);
+  font-weight: bold;
+}
+
+.cell.wrong {
+  background: var(--wrong);
+}
+
+.footer {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 10px;
+  opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+  <h1>Couple Sudoku ❤️</h1>
+  <div class="subtitle">Enter same code on both phones</div>
+
+  <input id="seedInput" placeholder="Game code (any number)">
+  <button onclick="startGame()">Start Game</button>
+
+  <div class="toggle" onclick="toggleDark()">🌙 Toggle Dark Mode</div>
+
+  <div class="stats">
+    <div>⏱ <span id="time">00:00</span></div>
+    <div>❌ <span id="mistakes">0</span></div>
+    <div>🏆 <span id="score">10000</span></div>
+  </div>
+
+  <div id="board" class="board"></div>
+
+  <div class="footer">
+    Lowest time + fewest mistakes wins 🏆
+  </div>
+</div>
+
+<script>
+/* ---------- Sudoku generator (seeded) ---------- */
+function seededRandom(seed) {
+  let x = Math.sin(seed++) * 10000;
+  return x - Math.floor(x);
+}
+
+function generatePuzzle(seed) {
+  const base =
+  "534678912672195348198342567859761423426853791713924856961537284287419635345286179";
+  let puzzle = base.split("");
+
+  for (let i = 0; i < 45; i++) {
+    let idx = Math.floor(seededRandom(seed + i) * 81);
+    puzzle[idx] = "0";
+  }
+  return puzzle.join("");
+}
+
+const solution =
+"534678912672195348198342567859761423426853791713924856961537284287419635345286179";
+
+let startTime, timer, mistakes = 0;
+
+/* ---------- Game ---------- */
+function startGame() {
+  const seed = Number(document.getElementById("seedInput").value || 1);
+  const puzzle = generatePuzzle(seed);
+
+  const board = document.getElementById("board");
+  board.innerHTML = "";
+  mistakes = 0;
+  document.getElementById("mistakes").textContent = 0;
+  document.getElementById("score").textContent = 10000;
+
+  clearInterval(timer);
+  startTime = Date.now();
+  timer = setInterval(updateTimer, 1000);
+
+  puzzle.split("").forEach((v, i) => {
+    const c = document.createElement("input");
+    c.className = "cell";
+    c.maxLength = 1;
+
+    if (v !== "0") {
+      c.value = v;
+      c.disabled = true;
+    } else {
+      c.oninput = () => {
+        if (c.value === solution[i]) {
+          c.disabled = true;
+          checkWin();
+        } else {
+          c.classList.add("wrong");
+          mistakes++;
+          document.getElementById("mistakes").textContent = mistakes;
+        }
+      };
+    }
+    board.appendChild(c);
+  });
+}
+
+function updateTimer() {
+  const t = Math.floor((Date.now() - startTime) / 1000);
+  const m = String(Math.floor(t / 60)).padStart(2,"0");
+  const s = String(t % 60).padStart(2,"0");
+  document.getElementById("time").textContent = `${m}:${s}`;
+
+  const score = Math.max(0, 10000 - t * 2 - mistakes * 100);
+  document.getElementById("score").textContent = score;
+}
+
+function checkWin() {
+  if ([...document.querySelectorAll(".cell")].every((c,i)=>c.value==solution[i])) {
+    clearInterval(timer);
+    alert("🎉 Done! Share your score ❤️");
+  }
+}
+
+function toggleDark() {
+  document.body.classList.toggle("dark");
+}
+</script>
+</body>
+</html>
