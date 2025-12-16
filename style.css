@@ -1,37 +1,28 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", system-ui, sans-serif;
   padding: 20px;
-  background: #fff6fb;
-  max-width: 600px;
+  background: linear-gradient(135deg, #fff0f6, #f0f9ff);
+  max-width: 420px;
   margin: auto;
 }
 
 h1 {
-  color: #d63384;
   text-align: center;
-}
-
-h2 {
+  color: #d63384;
   margin-bottom: 10px;
 }
 
-button {
-  padding: 10px 16px;
-  margin: 6px;
-  border: none;
-  border-radius: 6px;
-  background: #d63384;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #b02a6b;
+h2 {
+  text-align: center;
+  margin-bottom: 12px;
 }
 
 .screen {
   display: none;
+  background: white;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   margin-bottom: 20px;
 }
 
@@ -39,34 +30,61 @@ button:hover {
   display: block;
 }
 
+button {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0;
+  border: none;
+  border-radius: 12px;
+  background: #ff7eb3;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #74c0fc;
+}
+
+button.danger {
+  background: #ff6b6b;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
 .game-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
   font-weight: bold;
+  margin-bottom: 10px;
 }
 
 #board {
-  min-height: 200px;
-  background: white;
+  display: grid;
+  gap: 4px;
+  margin: 12px 0;
+}
+
+.cell {
+  width: 44px;
+  height: 44px;
+  text-align: center;
+  font-size: 18px;
   border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
+  border: 1px solid #ccc;
 }
 
 #history {
   margin-top: 30px;
 }
 
-#history-list {
-  list-style: none;
-  padding: 0;
-}
-
 #history-list li {
   background: white;
-  padding: 8px;
+  padding: 10px;
   margin-bottom: 6px;
-  border-radius: 6px;
-  font-size: 14px;
+  border-radius: 10px;
+  font-size: 13px;
 }
