@@ -1,1 +1,0 @@
-console.log("Couple Sudoku site loaded!");
